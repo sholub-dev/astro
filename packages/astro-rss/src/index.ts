@@ -173,7 +173,9 @@ async function generateRSS(rssOptions: ValidatedRSSOptions): Promise<string> {
 		suppressEmptyNode: true,
 		suppressBooleanAttributes: false,
 	};
-	const parser = new XMLParser(xmlOptions);
+	// `customData` is raw XML supplied by the user. Keep its text exactly as written
+	// instead of letting the parser turn values like `007` or `1.10` into numbers.
+	const parser = new XMLParser({ ...xmlOptions, parseTagValue: false });
 	const root: any = { '?xml': { '@_version': '1.0', '@_encoding': 'UTF-8' } };
 	if (typeof rssOptions.stylesheet === 'string') {
 		const isXSL = /\.xslt?$/i.test(rssOptions.stylesheet);

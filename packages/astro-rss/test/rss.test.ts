@@ -198,6 +198,26 @@ describe('getRssString', () => {
 		assert.ok(str.includes(customData));
 	});
 
+	it('should preserve text values in `customData` as written', async () => {
+		const channelCustomData = '<copyright>0123</copyright>';
+		const itemCustomData =
+			'<itunes:episode>007</itunes:episode><itunes:duration>1.10</itunes:duration><dc:identifier>0x1A</dc:identifier>';
+		const str = await getRssString({
+			title,
+			description,
+			items: [{ ...phpFeedItem, customData: itemCustomData }],
+			site,
+			xmlns: {
+				itunes: 'http://www.itunes.com/dtds/podcast-1.0.dtd',
+				dc: 'http://purl.org/dc/elements/1.1/',
+			},
+			customData: channelCustomData,
+		});
+
+		assert.ok(str.includes(channelCustomData));
+		assert.ok(str.includes(itemCustomData));
+	});
+
 	it('should not append trailing slash to URLs with the given option', async () => {
 		const str = await getRssString({
 			title,
